@@ -681,6 +681,178 @@ button {
 button:hover {
   background: #b83232;
 }
+
+/* Sage palette overrides */
+:root {
+  color: #29443a;
+  background: #f3f7f1;
+}
+.app-shell {
+  background: #f3f7f1;
+}
+.sidebar {
+  color: #f5faf4;
+  background: #29443a;
+}
+.brand-mark {
+  color: #29443a;
+  background: #b9d8bd;
+}
+.nav-item {
+  color: #c9ddce;
+}
+.nav-item span {
+  color: #91b09a;
+}
+.nav-item:hover,
+.nav-item.active {
+  background: #3d6250;
+}
+.module-dot {
+  background: #a9cdb0;
+}
+.dot-coral,
+.dot-blue,
+.dot-gold {
+  background: #a9cdb0;
+}
+.dot-mint {
+  background: #7eae8a;
+}
+.sidebar .status {
+  border-color: #547760;
+  color: #b9d8bd;
+}
+.theme-toggle {
+  color: #c9ddce;
+}
+.theme-toggle:hover {
+  background: #3d6250;
+}
+.dashboard h1,
+.panel h2,
+.money-total {
+  color: #29443a;
+}
+.dashboard .intro,
+.focus-band p {
+  color: #71877a;
+}
+.avatar {
+  background: #719b7b;
+}
+.icon-button {
+  border-color: #cbdccf;
+  color: #29443a;
+}
+.icon-button:hover {
+  background: #3d6250;
+}
+.focus-band,
+.panel,
+.form-card {
+  border-color: #d8e7d9;
+  background: #fbfdf9;
+}
+.focus-band {
+  border-left-color: #719b7b;
+}
+.button,
+button {
+  background: #719b7b;
+}
+.button:hover,
+button:hover {
+  background: #527e61;
+}
+.section-kicker,
+.nav-label {
+  color: #719b7b;
+}
+.count,
+.panel-arrow {
+  color: #527e61;
+}
+.progress-track span {
+  background: #719b7b;
+}
+.task,
+.deadline {
+  border-color: #e2eee2;
+  color: #3d594b;
+}
+.check {
+  border-color: #b9cdbb;
+}
+.done .check {
+  border-color: #719b7b;
+  background: #719b7b;
+}
+.habit-score strong {
+  color: #527e61;
+}
+.mini-bars i {
+  background: #b9d8bd;
+}
+.mini-bars i:last-child {
+  background: #527e61;
+}
+.date-tile {
+  color: #527e61;
+  background: #e7f2e7;
+}
+.budget-line span {
+  background: #9abc8f;
+}
+.setup-fields select,
+.item-form input {
+  border-color: #bfd3c2;
+  background: #fbfdf9;
+}
+.module-options label {
+  border-color: #d1e2d3;
+  color: #3d594b;
+}
+.dark-mode {
+  color: #e8f2e9;
+  background: #1c3028;
+}
+.dark-mode .dashboard h1,
+.dark-mode .panel h2,
+.dark-mode .money-total {
+  color: #e8f2e9;
+}
+.dark-mode .panel,
+.dark-mode .focus-band,
+.dark-mode .form-card {
+  border-color: #365544;
+  background: #263f33;
+}
+.dark-mode .focus-band p,
+.dark-mode .dashboard .intro,
+.dark-mode .muted {
+  color: #a9c3ad;
+}
+.dark-mode .task,
+.dark-mode .deadline {
+  border-color: #365544;
+  color: #d6e6d8;
+}
+.dark-mode .icon-button {
+  border-color: #527460;
+  color: #e8f2e9;
+}
+.dark-mode .progress-track,
+.dark-mode .budget-line {
+  background: #365544;
+}
+.bottom-nav {
+  border-color: #d8e7d9;
+  background: #fbfdf9;
+}
+.bottom-nav a {
+  color: #29443a;
+}
 .button,
 button {
   display: inline-block;
@@ -719,4 +891,65 @@ button:hover {
 }
 button:hover {
   background: #b83232;
+}
+
+/* Keep the sage theme above legacy component defaults. */
+.app-shell {
+  background: #f3f7f1;
+}
+.sidebar {
+  color: #f5faf4;
+  background: #29443a;
+}
+.brand-mark {
+  color: #29443a;
+  background: #b9d8bd;
+}
+.nav-item:hover,
+.nav-item.active {
+  background: #3d6250;
+}
+.dashboard h1,
+.panel h2,
+.money-total {
+  color: #29443a;
+}
+.focus-band,
+.panel,
+.form-card {
+  border-color: #d8e7d9;
+  background: #fbfdf9;
+}
+.button,
+button {
+  background: #719b7b;
+}
+.button:hover,
+button:hover {
+  background: #527e61;
+}
+.progress-track span {
+  background: #719b7b;
+}
+.budget-line span {
+  background: #9abc8f;
+}
+.dark-mode {
+  color: #e8f2e9;
+  background: #1c3028;
+}
+.dark-mode .dashboard h1,
+.dark-mode .panel h2,
+.dark-mode .money-total {
+  color: #e8f2e9;
+}
+.dark-mode .panel,
+.dark-mode .focus-band,
+.dark-mode .form-card {
+  border-color: #365544;
+  background: #263f33;
+}
+.bottom-nav {
+  border-color: #d8e7d9;
+  background: #fbfdf9;
 }
