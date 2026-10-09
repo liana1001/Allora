@@ -5,12 +5,14 @@ COPY apps ./apps
 COPY packages ./packages
 COPY tsconfig.base.json .
 RUN npm ci
+RUN npm run build --workspace=@allora/shared
 RUN npm run build --workspace=@allora/api
 
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/packages ./packages
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/apps/api/package.json ./apps/api/package.json
 EXPOSE 4000
