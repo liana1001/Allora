@@ -37,4 +37,31 @@ describe('AccountService', () => {
       'INVALID_CREDENTIALS',
     );
   });
+
+  it('supports verification, password recovery, profile updates, and password changes', async () => {
+    const service = new AccountService();
+    const account = await service.signUp({
+      email: 'person@example.com',
+      password: 'correct horse battery staple',
+      displayName: 'Person',
+    });
+    service.verifyEmail(account.verificationToken);
+    const resetToken = service.requestPasswordReset(account.email);
+    expect(resetToken).toBeTruthy();
+    await service.resetPassword(resetToken!, 'new correct password');
+    await expect(
+      service.login({ email: account.email, password: 'new correct password' }),
+    ).resolves.toBeTruthy();
+    await service.changePassword(account.id, {
+      currentPassword: 'new correct password',
+      newPassword: 'another correct password',
+    });
+    expect(
+      service.updateProfile(account.id, {
+        displayName: 'Updated',
+        timeZone: 'UTC',
+        currency: 'USD',
+      }).displayName,
+    ).toBe('Updated');
+  });
 });

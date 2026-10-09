@@ -6,7 +6,12 @@ import {
   timingSafeEqual,
 } from 'node:crypto';
 import { promisify } from 'node:util';
-import type { LoginInput, SignUpInput } from '@allora/shared';
+import type {
+  LoginInput,
+  PasswordChangeInput,
+  ProfileUpdateInput,
+  SignUpInput,
+} from '@allora/shared';
 
 const scrypt = promisify(scryptCallback);
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
@@ -24,11 +29,14 @@ type Account = {
 
 type Session = { tokenHash: string; accountId: string; expiresAt: Date; createdAt: Date };
 type Attempt = { count: number; windowStartedAt: number };
+type OneTimeToken = { accountId: string; expiresAt: Date };
 
 export class AccountService {
   private readonly accounts = new Map<string, Account>();
   private readonly sessions = new Map<string, Session>();
   private readonly attempts = new Map<string, Attempt>();
+  private readonly verificationTokens = new Map<string, OneTimeToken>();
+  private readonly resetTokens = new Map<string, OneTimeToken>();
 
   async signUp(input: SignUpInput) {
     const email = input.email.toLowerCase();
@@ -44,7 +52,13 @@ export class AccountService {
       createdAt: new Date(),
     };
     this.accounts.set(account.id, account);
-    return { id: account.id, email: account.email, displayName: account.displayName };
+    const verificationToken = this.createOneTimeToken(this.verificationTokens, account.id);
+    return {
+      id: account.id,
+      email: account.email,
+      displayName: account.displayName,
+      verificationToken,
+    };
   }
 
   async login(input: LoginInput) {
@@ -87,6 +101,64 @@ export class AccountService {
 
   revokeSession(token: string) {
     this.sessions.delete(hashToken(token));
+  }
+
+  verifyEmail(token: string) {
+    const pending = this.consumeToken(this.verificationTokens, token);
+    if (!pending) throw new Error('INVALID_VERIFICATION_TOKEN');
+    const account = this.accounts.get(pending.accountId);
+    if (!account) throw new Error('ACCOUNT_NOT_FOUND');
+    account.emailVerifiedAt = new Date();
+  }
+
+  requestPasswordReset(email: string) {
+    const account = [...this.accounts.values()].find(
+      (candidate) => candidate.email === email.toLowerCase(),
+    );
+    if (!account) return null;
+    return this.createOneTimeToken(this.resetTokens, account.id);
+  }
+
+  async resetPassword(token: string, password: string) {
+    const pending = this.consumeToken(this.resetTokens, token);
+    if (!pending) throw new Error('INVALID_RESET_TOKEN');
+    const account = this.accounts.get(pending.accountId);
+    if (!account) throw new Error('ACCOUNT_NOT_FOUND');
+    account.passwordHash = await hashPassword(password);
+  }
+
+  async changePassword(accountId: string, input: PasswordChangeInput) {
+    const account = this.accounts.get(accountId);
+    if (!account || !(await verifyPassword(input.currentPassword, account.passwordHash))) {
+      throw new Error('INVALID_CREDENTIALS');
+    }
+    account.passwordHash = await hashPassword(input.newPassword);
+  }
+
+  updateProfile(accountId: string, input: ProfileUpdateInput) {
+    const account = this.accounts.get(accountId);
+    if (!account) throw new Error('ACCOUNT_NOT_FOUND');
+    account.displayName = input.displayName;
+    return {
+      id: account.id,
+      email: account.email,
+      displayName: account.displayName,
+      timeZone: input.timeZone,
+      currency: input.currency,
+    };
+  }
+
+  private createOneTimeToken(store: Map<string, OneTimeToken>, accountId: string) {
+    const token = randomBytes(32).toString('base64url');
+    store.set(hashToken(token), { accountId, expiresAt: new Date(Date.now() + 1000 * 60 * 60) });
+    return token;
+  }
+
+  private consumeToken(store: Map<string, OneTimeToken>, token: string) {
+    const key = hashToken(token);
+    const pending = store.get(key);
+    store.delete(key);
+    return pending && pending.expiresAt.getTime() > Date.now() ? pending : null;
   }
 
   private checkRateLimit(email: string) {

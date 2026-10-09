@@ -2,7 +2,13 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import Fastify, { type FastifyError } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { healthResponseSchema, loginSchema, signUpSchema } from '@allora/shared';
+import {
+  healthResponseSchema,
+  loginSchema,
+  passwordChangeSchema,
+  profileUpdateSchema,
+  signUpSchema,
+} from '@allora/shared';
 import { AccountService } from './auth.js';
 
 export function buildApp() {
@@ -25,7 +31,34 @@ export function buildApp() {
   app.post('/api/v1/accounts', async (request, reply) => {
     const input = signUpSchema.parse(request.body);
     const account = await accounts.signUp(input);
-    return reply.code(201).send({ account });
+    const { verificationToken, ...publicAccount } = account;
+    return reply
+      .code(201)
+      .send({
+        account: publicAccount,
+        ...(process.env.NODE_ENV === 'test' ? { verificationToken } : {}),
+      });
+  });
+
+  app.post('/api/v1/accounts/verify-email', async (request, reply) => {
+    const body = request.body as { token?: string };
+    accounts.verifyEmail(body.token ?? '');
+    return reply.send({ verified: true });
+  });
+
+  app.post('/api/v1/password-resets', async (request, reply) => {
+    const body = request.body as { email?: string };
+    const token = accounts.requestPasswordReset(body.email ?? '');
+    return reply.send({
+      accepted: true,
+      ...(process.env.NODE_ENV === 'test' && token ? { token } : {}),
+    });
+  });
+
+  app.post('/api/v1/password-resets/complete', async (request, reply) => {
+    const body = request.body as { token?: string; password?: string };
+    await accounts.resetPassword(body.token ?? '', body.password ?? '');
+    return reply.send({ reset: true });
   });
 
   app.post('/api/v1/sessions', async (request, reply) => {
@@ -61,6 +94,43 @@ export function buildApp() {
         },
       });
     accounts.revokeSession(token);
+    return reply.code(204).send();
+  });
+
+  app.patch('/api/v1/profile', async (request, reply) => {
+    const token = getBearerToken(request.headers.authorization);
+    const session = token ? accounts.getSession(token) : null;
+    if (!session)
+      return reply
+        .code(401)
+        .send({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Authentication required.',
+            details: [],
+            requestId: request.id,
+          },
+        });
+    return reply.send({
+      account: accounts.updateProfile(session.accountId, profileUpdateSchema.parse(request.body)),
+    });
+  });
+
+  app.post('/api/v1/profile/password', async (request, reply) => {
+    const token = getBearerToken(request.headers.authorization);
+    const session = token ? accounts.getSession(token) : null;
+    if (!session)
+      return reply
+        .code(401)
+        .send({
+          error: {
+            code: 'UNAUTHORIZED',
+            message: 'Authentication required.',
+            details: [],
+            requestId: request.id,
+          },
+        });
+    await accounts.changePassword(session.accountId, passwordChangeSchema.parse(request.body));
     return reply.code(204).send();
   });
 
