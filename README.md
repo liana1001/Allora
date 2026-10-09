@@ -9,4 +9,4 @@ The implementation plan is divided into these phases. Work in order and tick a t
 - [Phase 4: Growth](PHASE_4_GROWTH.md)
 - [Before Each Live Release](BEFORE_LIVE_RELEASE.md)
 
-The complete combined checklist remains in [ALLORA_TASK_LIST.md](../ALLORA_TASK_LIST.md).
+The complete combined checklist remains in [ALLORA_TASK_LIST.md](ALLORA_TASK_LIST.md).
