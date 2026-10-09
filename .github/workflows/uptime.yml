@@ -1,0 +1,19 @@
+name: Uptime check
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API health
+        if: ${{ vars.TEST_API_URL != '' }}
+        run: curl --fail --silent --show-error "$TEST_API_URL/api/v1/health"
+        env:
+          TEST_API_URL: ${{ vars.TEST_API_URL }}
+      - name: Explain missing test URL
+        if: ${{ vars.TEST_API_URL == '' }}
+        run: echo "Configure TEST_API_URL as a repository variable to enable uptime checks."

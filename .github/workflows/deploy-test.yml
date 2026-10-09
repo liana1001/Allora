@@ -1,0 +1,19 @@
+name: Deploy test
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - name: Trigger test deployment
+        if: ${{ secrets.TEST_DEPLOY_HOOK_URL != '' }}
+        run: curl --fail --silent --show-error -X POST "$TEST_DEPLOY_HOOK_URL"
+        env:
+          TEST_DEPLOY_HOOK_URL: ${{ secrets.TEST_DEPLOY_HOOK_URL }}
+      - name: Explain missing deployment hook
+        if: ${{ secrets.TEST_DEPLOY_HOOK_URL == '' }}
+        run: echo "Configure TEST_DEPLOY_HOOK_URL in the test environment to enable deployment."
