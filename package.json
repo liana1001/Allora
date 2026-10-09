@@ -11,7 +11,7 @@
     "db:purge": "tsx database/jobs/purge-soft-deleted.ts",
     "dev": "npm run dev --workspaces --if-present",
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces",
+    "test": "npm run build --workspace=@allora/shared && npm run test --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
