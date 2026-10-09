@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: allora-api
+    runtime: docker
+    repo: https://github.com/liana1001/Allora
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        sync: false
+
+  - type: web
+    name: allora-web
+    runtime: static
+    repo: https://github.com/liana1001/Allora
+    branch: main
+    buildCommand: npm ci && npm run build --workspace=@allora/web
+    staticPublishPath: ./apps/web/dist
