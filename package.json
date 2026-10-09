@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspace=@allora/shared && npm run build --workspace=@allora/api && npm run build --workspace=@allora/web",
     "db:migrate": "tsx database/scripts/migrate.ts",
     "db:purge": "tsx database/jobs/purge-soft-deleted.ts",
     "dev": "npm run dev --workspaces --if-present",
