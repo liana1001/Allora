@@ -1,4 +1,4 @@
-# Phase 2: Money and Projects
+# Phase 2: Finance and Projects
 
 - [ ] 2.1 Finance: accounts, transactions with receipt photo, transfers, categories, budgets with warnings at 80 and 100 percent, recurring transactions, savings goals, debts, reports, currencies, CSV export, bills on the calendar [FIN1 to FIN11].
 - [ ] 2.2 Projects: projects, milestones, tasks in the shared task table, progress, board, list, and timeline views, notes and files, dependencies with a loop check, templates [PRJ1 to PRJ7].
