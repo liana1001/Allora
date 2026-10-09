@@ -429,6 +429,68 @@ button:hover {
 .item-form p {
   color: #276749;
 }
+.onboarding-card {
+  max-width: 720px;
+}
+.onboarding-card .intro {
+  margin-bottom: 30px;
+}
+.onboarding-card fieldset {
+  margin: 0 0 26px;
+  padding: 0;
+  border: 0;
+}
+.onboarding-card legend {
+  margin-bottom: 12px;
+  font:
+    1.15rem Georgia,
+    serif;
+}
+.module-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.module-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1px solid #e0d8cc;
+  border-radius: 4px;
+  color: #344b58;
+  font-size: 0.85rem;
+}
+.module-options input {
+  accent-color: #e87468;
+}
+.setup-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.setup-fields label {
+  display: grid;
+  gap: 8px;
+  color: #71818a;
+  font-size: 0.78rem;
+}
+.setup-fields select {
+  border: 1px solid #c9c3b8;
+  border-radius: 4px;
+  padding: 12px;
+  color: #172b3a;
+  background: #fffdf8;
+  font: inherit;
+}
+.success-message {
+  color: #276749;
+  font-size: 0.82rem;
+}
+.bottom-nav {
+  display: none;
+}
 .dark-mode {
   color: #edf1ef;
   background: #12232d;
@@ -512,6 +574,26 @@ button:hover {
   .form-card {
     margin-top: 44px;
     padding: 26px;
+  }
+  .setup-fields {
+    grid-template-columns: 1fr;
+  }
+  .bottom-nav {
+    position: fixed;
+    inset: auto 12px 12px;
+    z-index: 5;
+    display: flex;
+    justify-content: space-around;
+    padding: 14px;
+    border: 1px solid #e8e0d4;
+    background: #fffdf8;
+    box-shadow: 0 8px 24px #172b3a22;
+  }
+  .bottom-nav a {
+    color: #172b3a;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
   }
 }
 @tailwind base;

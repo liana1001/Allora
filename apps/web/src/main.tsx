@@ -1,4 +1,4 @@
-import { StrictMode, useState, type FormEvent } from 'react';
+import { StrictMode, useEffect, useState, type FormEvent } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
@@ -40,6 +40,9 @@ function App() {
           <Link className="nav-item" to="/items/new">
             Quick add <span>⌘ K</span>
           </Link>
+          <Link className="nav-item" to="/onboarding">
+            Setup <span>⌘ 2</span>
+          </Link>
         </div>
         <div className="nav-group modules">
           <span className="nav-label">Modules</span>
@@ -70,12 +73,29 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard darkMode={darkMode} />} />
         <Route path="/items/new" element={<FirstItemForm />} />
+        <Route path="/onboarding" element={<Onboarding />} />
       </Routes>
+      <nav className="bottom-nav" aria-label="Mobile navigation">
+        <Link to="/">Overview</Link>
+        <Link to="/items/new">Add</Link>
+        <Link to="/onboarding">Setup</Link>
+      </nav>
     </main>
   );
 }
 
 function Dashboard({ darkMode }: { darkMode: boolean }) {
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        window.location.assign('/items/new');
+      }
+    };
+    window.addEventListener('keydown', handleShortcut);
+    return () => window.removeEventListener('keydown', handleShortcut);
+  }, []);
+
   return (
     <section className="dashboard">
       <header className="dashboard-header">
@@ -196,6 +216,69 @@ function Dashboard({ darkMode }: { darkMode: boolean }) {
           </div>
         </section>
       </div>
+    </section>
+  );
+}
+
+function Onboarding() {
+  const [modules, setModules] = useState(['Tasks', 'Academics', 'Habits']);
+  const [saved, setSaved] = useState(false);
+  const availableModules = ['Tasks', 'Academics', 'Habits', 'Money', 'Research'];
+
+  function toggleModule(module: string) {
+    setModules((current) =>
+      current.includes(module) ? current.filter((item) => item !== module) : [...current, module],
+    );
+  }
+
+  return (
+    <section className="dashboard form-page">
+      <section className="form-card onboarding-card">
+        <p className="eyebrow">Workspace setup</p>
+        <h1>Make Allora yours.</h1>
+        <p className="intro">Choose the areas you want to see, then set the basics for your day.</p>
+        <fieldset>
+          <legend>Modules</legend>
+          <div className="module-options">
+            {availableModules.map((module) => (
+              <label key={module}>
+                <input
+                  type="checkbox"
+                  checked={modules.includes(module)}
+                  onChange={() => toggleModule(module)}
+                />
+                {module}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="setup-fields">
+          <label>
+            Time zone
+            <select defaultValue="UTC">
+              <option>UTC</option>
+              <option>Asia/Dhaka</option>
+              <option>America/New_York</option>
+            </select>
+          </label>
+          <label>
+            Currency
+            <select defaultValue="USD">
+              <option>USD</option>
+              <option>EUR</option>
+              <option>BDT</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" onClick={() => setSaved(true)}>
+          Save workspace
+        </button>
+        {saved && (
+          <p className="success-message" role="status">
+            Workspace preferences saved locally.
+          </p>
+        )}
+      </section>
     </section>
   );
 }
