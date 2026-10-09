@@ -38,32 +38,28 @@ export function buildApp() {
     const token = getBearerToken(request.headers.authorization);
     const session = token ? accounts.getSession(token) : null;
     if (!session)
-      return reply
-        .code(401)
-        .send({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required.',
-            details: [],
-            requestId: request.id,
-          },
-        });
+      return reply.code(401).send({
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required.',
+          details: [],
+          requestId: request.id,
+        },
+      });
     return reply.send({ sessions: accounts.listSessions(session.accountId) });
   });
 
   app.delete('/api/v1/sessions/current', async (request, reply) => {
     const token = getBearerToken(request.headers.authorization);
     if (!token || !accounts.getSession(token))
-      return reply
-        .code(401)
-        .send({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required.',
-            details: [],
-            requestId: request.id,
-          },
-        });
+      return reply.code(401).send({
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required.',
+          details: [],
+          requestId: request.id,
+        },
+      });
     accounts.revokeSession(token);
     return reply.code(204).send();
   });

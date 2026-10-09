@@ -10,4 +10,6 @@ npm run db:migrate
 
 The migration runner uses TLS for Supabase connections and applies files in order.
 
+Soft-deleted records remain recoverable for 30 days. Run `npm run db:purge` from a scheduled worker after verifying backups and storage cleanup policies.
+
 All timestamps use `TIMESTAMPTZ` and are stored in UTC. Queries must include `owner_id` and `deleted_at IS NULL` unless intentionally operating on deleted records.

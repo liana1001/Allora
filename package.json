@@ -8,6 +8,7 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "db:migrate": "tsx database/scripts/migrate.ts",
+    "db:purge": "tsx database/jobs/purge-soft-deleted.ts",
     "dev": "npm run dev --workspaces --if-present",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
