@@ -32,12 +32,10 @@ export function buildApp() {
     const input = signUpSchema.parse(request.body);
     const account = await accounts.signUp(input);
     const { verificationToken, ...publicAccount } = account;
-    return reply
-      .code(201)
-      .send({
-        account: publicAccount,
-        ...(process.env.NODE_ENV === 'test' ? { verificationToken } : {}),
-      });
+    return reply.code(201).send({
+      account: publicAccount,
+      ...(process.env.NODE_ENV === 'test' ? { verificationToken } : {}),
+    });
   });
 
   app.post('/api/v1/accounts/verify-email', async (request, reply) => {
@@ -101,16 +99,14 @@ export function buildApp() {
     const token = getBearerToken(request.headers.authorization);
     const session = token ? accounts.getSession(token) : null;
     if (!session)
-      return reply
-        .code(401)
-        .send({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required.',
-            details: [],
-            requestId: request.id,
-          },
-        });
+      return reply.code(401).send({
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required.',
+          details: [],
+          requestId: request.id,
+        },
+      });
     return reply.send({
       account: accounts.updateProfile(session.accountId, profileUpdateSchema.parse(request.body)),
     });
@@ -120,16 +116,14 @@ export function buildApp() {
     const token = getBearerToken(request.headers.authorization);
     const session = token ? accounts.getSession(token) : null;
     if (!session)
-      return reply
-        .code(401)
-        .send({
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Authentication required.',
-            details: [],
-            requestId: request.id,
-          },
-        });
+      return reply.code(401).send({
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Authentication required.',
+          details: [],
+          requestId: request.id,
+        },
+      });
     await accounts.changePassword(session.accountId, passwordChangeSchema.parse(request.body));
     return reply.code(204).send();
   });
